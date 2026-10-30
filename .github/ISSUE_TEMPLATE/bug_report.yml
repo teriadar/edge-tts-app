@@ -1,0 +1,49 @@
+name: Bug Report
+description: Report a bug with EPUB parsing, Edge-TTS synthesis, or playback
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Import EPUB '...'
+        2. Select voice '...'
+        3. Tap Play on paragraph '...'
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device & Android Version
+      placeholder: "e.g. Redmi Note 9S, Android 14"
+    validations:
+      required: true
+
+  - type: input
+    id: voice
+    attributes:
+      label: Selected Voice & Rate
+      placeholder: "e.g. en-US-AvaMultilingualNeural, 1.0x"
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or Additional Context
+      description: Paste any relevant logcat output, Edge health status, or screenshots here.
+      render: shell
+    validations:
+      required: false

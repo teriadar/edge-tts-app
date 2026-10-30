@@ -1,0 +1,40 @@
+[package]
+name = "pagina-core"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/teriadar/pagina_reader"
+keywords = ["epub", "edge-tts", "tts", "audiobook", "android"]
+categories = ["multimedia::audio", "parser-implementations", "text-processing"]
+
+[lib]
+name = "pagina_core"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[[bin]]
+name = "edge-tts-rs"
+path = "src/bin/edge_tts_cli.rs"
+
+[dependencies]
+tokio = { version = "1.40", features = ["full"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "socks"] }
+http = "1.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+uuid = { version = "1.10", features = ["v4"] }
+chrono = "0.4"
+regex = "1.11"
+rand = "0.8"
+zip = "2.2"
+quick-xml = "0.36"
+unicode-segmentation = "1.12"
+clap = { version = "4.5", features = ["derive"] }
+jni = "0.21"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
