@@ -1,0 +1,8 @@
+Pagina Reader è un lettore di e-book EPUB 2/3 open-source per Android con sintesi vocale neurale (Edge-TTS) ed evidenziazione sincronizzata parola per parola in tempo reale.
+
+<b>Caratteristiche principali:</b>
+• <b>Narrazione Neurale Edge-TTS:</b> Voci naturali di alta qualità in italiano e inglese basate su un motore nativo in Rust, con connessione diretta dal dispositivo senza server intermedi né chiavi API.
+• <b>Evidenziazione Parola per Parola e Click-to-Read:</b> Segue il testo in tempo reale durante la lettura. Tocca qualsiasi parola per avviare la narrazione da quel punto esatto, con pre-buffering automatico del paragrafo successivo.
+• <b>Riproduzione in Background:</b> Basato su AndroidX Media3 (ExoPlayer) con controlli completi su schermata di blocco, notifiche e cuffie Bluetooth.
+• <b>Cache Audio Intelligente:</b> I segmenti audio sintetizzati vengono salvati nella cache locale (SHA-256) per riascoltare i passaggi senza connessione internet.
+• <b>Interfaccia Material 3 Pulita:</b> Design Material You essenziale, ricerca automatica delle copertine e zero tracciamento o telemetria.

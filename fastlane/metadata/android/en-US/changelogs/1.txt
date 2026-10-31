@@ -1,0 +1,6 @@
+Initial release of Pagina Reader:
+• EPUB 2 and EPUB 3 parsing via native Rust engine (rust-core)
+• Neural Edge-TTS audio narration with English and Italian voices
+• Real-time word-by-word highlighting and click-to-read navigation
+• Background playback with AndroidX Media3 (ExoPlayer)
+• Local SHA-256 audio caching and automatic book cover/metadata lookup

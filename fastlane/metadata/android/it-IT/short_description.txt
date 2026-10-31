@@ -1,0 +1,1 @@
+Lettore EPUB con narrazione neurale Edge-TTS ed evidenziazione in tempo reale

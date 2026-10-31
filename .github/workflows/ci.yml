@@ -74,21 +74,37 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Assemble Debug APK
+      - name: Decode Keystore and Assemble APK
         working-directory: android-app
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Signing key found in secrets: building signed Release APK..."
+            echo "$KEYSTORE_BASE64" | base64 --decode > release.jks
+            export KEYSTORE_FILE="release.jks"
+            ./gradlew assembleRelease --no-daemon
+            cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/pagina_reader.apk
+            rm -f release.jks
+          else
+            echo "No signing key in secrets (PR or local run): building Debug APK..."
+            ./gradlew assembleDebug --no-daemon
+            cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/pagina_reader.apk
+          fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pagina-reader-debug-apk
-          path: android-app/app/build/outputs/apk/debug/app-debug.apk
+          name: pagina_reader-apk
+          path: android-app/app/build/outputs/apk/pagina_reader.apk
 
       - name: Publish GitHub Release on Tag
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          files: android-app/app/build/outputs/apk/debug/app-debug.apk
+          files: android-app/app/build/outputs/apk/pagina_reader.apk

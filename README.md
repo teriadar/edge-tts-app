@@ -5,7 +5,8 @@
 <h1 align="center">Pagina Reader</h1>
 
 <p align="center">
-  <strong>Read and listen to EPUB books on Android with neural Edge-TTS narration and real-time word highlighting.</strong>
+  <strong>Read and listen to EPUB books on Android with neural Edge-TTS narration and real-time word highlighting.</strong><br />
+  <sub><i><b>pāgina</b></i> · pronounced <code>/ˈpaː.ɡi.na/</code> (<i>PAH-gee-nah</i>, with a hard <i>g</i>) · from Latin and Italian for "page" or "column of writing".</sub>
 </p>
 
 <p align="center">
@@ -102,7 +103,7 @@ Aside from Microsoft Edge's speech endpoints (`speech.platform.bing.com`), the a
 
 If you just want to try the app without installing Rust or Android Studio, you can download the latest pre-built APK directly from the **Releases** section of this repository.
 
-The APK is built and published automatically by **GitHub Actions** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). Whenever a new version tag (`v*`) is pushed, GitHub spins up a clean Ubuntu runner, runs the `rust-core` test suite, cross-compiles `libpagina_core.so` for Android (`arm64-v8a`, `armeabi-v7a`, and `x86_64`) using `cargo-ndk`, packages the APK with Gradle, and attaches it directly to the GitHub Release. This also guarantees that the downloadable APK is built transparently from the exact source code in this repo.
+The APK is built, signed, and published automatically by **GitHub Actions** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). Whenever a new version tag (`v*`) is pushed, GitHub spins up a clean Ubuntu runner, runs the `rust-core` test suite, cross-compiles `libpagina_core.so` for Android (`arm64-v8a`, `armeabi-v7a`, and `x86_64`) using `cargo-ndk`, packages and signs the optimized release APK with Gradle (`assembleRelease`), and attaches it directly to the GitHub Release. This also guarantees that the downloadable APK is built transparently from the exact source code in this repo (and can be tracked directly with tools like [Obtainium](https://github.com/ImranR98/Obtainium)).
 
 ### Building Locally
 
@@ -112,6 +113,7 @@ Using `make` from the repository root, you can compile both the native Rust engi
 
 ```bash
 make apk-debug
+make apk-release
 make install
 make test
 ```

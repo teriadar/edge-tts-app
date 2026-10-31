@@ -583,7 +583,7 @@ pub async fn fetch_book_metadata_online(
 
     let client = Client::builder()
         .timeout(Duration::from_secs(8))
-        .user_agent("PaginaReader/1.0 (Android; +https://github.com/pagina-reader)")
+        .user_agent("PaginaReader/0.1.0 (Android; +https://github.com/teriadar/pagina_reader)")
         .build()?;
 
     let mut primary = query_google_books(&client, clean_title, author, isbn).await;
