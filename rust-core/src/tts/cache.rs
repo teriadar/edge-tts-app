@@ -302,7 +302,7 @@ mod tests {
 
     #[test]
     fn test_tts_cache_ram_and_disk_roundtrip() {
-        let temp_dir = std::env::temp_dir().join("pagina_reader_test_cache");
+        let temp_dir = std::env::temp_dir().join("nuvola_reader_test_cache");
         let cache = TtsCache::new(Some(&temp_dir));
         let _ = cache.clear();
 
@@ -347,7 +347,7 @@ mod tests {
 
     #[test]
     fn test_tts_cache_prune_disk_enforces_byte_budget() {
-        let temp_dir = std::env::temp_dir().join("pagina_reader_test_prune_cache");
+        let temp_dir = std::env::temp_dir().join("nuvola_reader_test_prune_cache");
         let cache = TtsCache::new(Some(&temp_dir));
         let _ = cache.clear();
 

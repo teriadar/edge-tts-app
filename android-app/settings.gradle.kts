@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PaginaReader"
+rootProject.name = "NuvolaReader"
 include(":app")

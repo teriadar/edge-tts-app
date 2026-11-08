@@ -1,4 +1,4 @@
-package com.pagina.reader
+package com.nuvola.reader
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,10 +14,10 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
-import com.pagina.reader.ui.ReaderViewModel
-import com.pagina.reader.ui.screens.LibraryScreen
-import com.pagina.reader.ui.screens.ReaderScreen
-import com.pagina.reader.ui.theme.PaginaReaderTheme
+import com.nuvola.reader.ui.ReaderViewModel
+import com.nuvola.reader.ui.screens.LibraryScreen
+import com.nuvola.reader.ui.screens.ReaderScreen
+import com.nuvola.reader.ui.theme.NuvolaReaderTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val state by viewModel.uiState.collectAsState()
 
-            PaginaReaderTheme {
+            NuvolaReaderTheme {
                 BackHandler(enabled = state.activeBook != null) {
                     viewModel.closeReader()
                 }

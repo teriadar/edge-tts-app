@@ -1,4 +1,4 @@
-Pagina Reader is an open-source EPUB 2/3 e-book reader for Android featuring neural text-to-speech (Edge-TTS) narration and synchronized word-by-word highlighting.
+Nuvola Reader is an open-source EPUB 2/3 e-book reader for Android featuring neural text-to-speech (Edge-TTS) narration and synchronized word-by-word highlighting.
 
 <b>Key Features:</b>
 • <b>Neural Edge-TTS Narration:</b> High-quality natural voices for English (US/UK) and Italian powered by a native Rust implementation of the Edge Read Aloud protocol—connecting directly from your device with no intermediary servers or API keys.

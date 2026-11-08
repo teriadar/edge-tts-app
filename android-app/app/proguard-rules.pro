@@ -1,4 +1,4 @@
--keep class com.pagina.reader.bridge.PaginaNativeBridge {
+-keep class com.nuvola.reader.bridge.NuvolaNativeBridge {
     *;
 }
 -keepclasseswithmembernames,includedescriptorclasses class * {
@@ -15,10 +15,10 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class com.pagina.reader.**$$serializer { *; }
--keepclassmembers class com.pagina.reader.** {
+-keep,includedescriptorclasses class com.nuvola.reader.**$$serializer { *; }
+-keepclassmembers class com.nuvola.reader.** {
     *** Companion;
 }
--keepclasseswithmembers class com.pagina.reader.** {
+-keepclasseswithmembers class com.nuvola.reader.** {
     kotlinx.serialization.KSerializer serializer(...);
 }

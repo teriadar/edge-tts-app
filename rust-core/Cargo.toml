@@ -1,14 +1,14 @@
 [package]
-name = "pagina-core"
+name = "nuvola-core"
 version = "0.1.0"
 edition = "2021"
 license = "GPL-3.0-or-later"
-repository = "https://github.com/teriadar/pagina_reader"
+repository = "https://github.com/teriadar/edge-tts-app"
 keywords = ["epub", "edge-tts", "tts", "audiobook", "android"]
 categories = ["multimedia::audio", "parser-implementations", "text-processing"]
 
 [lib]
-name = "pagina_core"
+name = "nuvola_core"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [[bin]]

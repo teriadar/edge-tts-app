@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use tokio::runtime::{Builder, Runtime};
 
 use crate::chunker::{ParagraphData, SentenceChunk, WordAudioTiming, WordSpan};
-use crate::ffi::{PaginaEngine, PrebufferSession, SynthesizedChunk};
+use crate::ffi::{NuvolaEngine, PrebufferSession, SynthesizedChunk};
 use crate::tts::constants::DEFAULT_VOICE;
 use crate::tts::{EdgeHealthReport, TtsCache, VoicePreset};
 
@@ -21,9 +21,9 @@ fn runtime() -> &'static Runtime {
         Builder::new_multi_thread()
             .worker_threads(2)
             .enable_all()
-            .thread_name("pagina-tokio-jni")
+            .thread_name("nuvola-tokio-jni")
             .build()
-            .expect("Failed to initialize Pagina Tokio runtime")
+            .expect("Failed to initialize Nuvola Tokio runtime")
     })
 }
 
@@ -125,29 +125,29 @@ pub fn bridge_cancel_pending_queue() -> String {
 }
 
 pub fn bridge_check_health_json(timeout_ms: u64) -> String {
-    let report: EdgeHealthReport = runtime().block_on(PaginaEngine::check_health(timeout_ms));
+    let report: EdgeHealthReport = runtime().block_on(NuvolaEngine::check_health(timeout_ms));
     BridgeResponse::success(report)
 }
 
 pub fn bridge_quick_ping_json(timeout_ms: u64) -> String {
-    let report: EdgeHealthReport = runtime().block_on(PaginaEngine::quick_ping(timeout_ms));
+    let report: EdgeHealthReport = runtime().block_on(NuvolaEngine::quick_ping(timeout_ms));
     BridgeResponse::success(report)
 }
 
 pub fn bridge_get_english_presets_json() -> String {
-    let presets: Vec<VoicePreset> = PaginaEngine::get_english_voice_presets();
+    let presets: Vec<VoicePreset> = NuvolaEngine::get_english_voice_presets();
     BridgeResponse::success(presets)
 }
 
 pub fn bridge_fetch_english_voices_json() -> String {
-    match runtime().block_on(PaginaEngine::fetch_english_voices()) {
+    match runtime().block_on(NuvolaEngine::fetch_english_voices()) {
         Ok(voices) => BridgeResponse::success(voices),
         Err(e) => bridge_error_json(e.to_string()),
     }
 }
 
 pub fn bridge_load_epub_json(path: &str) -> String {
-    match PaginaEngine::load_epub(path) {
+    match NuvolaEngine::load_epub(path) {
         Ok(chapters) => BridgeResponse::success(chapters),
         Err(e) => bridge_error_json(e.to_string()),
     }
@@ -158,7 +158,7 @@ pub fn bridge_load_epub_book_json(path: &str, cover_output_dir: Option<&str>) ->
         .map(str::trim)
         .filter(|s| !s.is_empty())
         .map(PathBuf::from);
-    match PaginaEngine::load_epub_book(path, cover_dir.as_deref()) {
+    match NuvolaEngine::load_epub_book(path, cover_dir.as_deref()) {
         Ok(book) => BridgeResponse::success(book),
         Err(e) => bridge_error_json(e.to_string()),
     }
@@ -177,7 +177,7 @@ pub fn bridge_fetch_book_metadata_online_json(
     let clean_author = author.map(str::trim).filter(|s| !s.is_empty());
     let clean_isbn = isbn.map(str::trim).filter(|s| !s.is_empty());
 
-    match runtime().block_on(PaginaEngine::fetch_book_metadata_online(
+    match runtime().block_on(NuvolaEngine::fetch_book_metadata_online(
         title,
         clean_author,
         clean_isbn,
@@ -220,7 +220,7 @@ pub fn bridge_chunk_paragraph_json(paragraph_json: &str, sentences_per_chunk: us
         Ok(p) => p,
         Err(e) => return bridge_error_json(format!("Invalid ParagraphData JSON: {}", e)),
     };
-    let chunks = PaginaEngine::chunk_paragraph(&paragraph, sentences_per_chunk);
+    let chunks = NuvolaEngine::chunk_paragraph(&paragraph, sentences_per_chunk);
     BridgeResponse::success(chunks)
 }
 
@@ -332,7 +332,7 @@ pub fn bridge_active_word_at_ms_json(timings_json: &str, current_position_ms: u6
         Ok(t) => t,
         Err(e) => return bridge_error_json(format!("Invalid WordAudioTiming[] JSON: {}", e)),
     };
-    let active = PaginaEngine::active_word_at_ms(&timings, current_position_ms);
+    let active = NuvolaEngine::active_word_at_ms(&timings, current_position_ms);
     BridgeResponse::success(active)
 }
 
@@ -352,7 +352,7 @@ fn rust_to_jstring(env: &mut JNIEnv, output: &str) -> jstring {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeInitSession(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeInitSession(
     mut env: JNIEnv,
     _class: JClass,
     cache_dir: JString,
@@ -373,7 +373,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeIn
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCancelPendingQueue(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeCancelPendingQueue(
     mut env: JNIEnv,
     _class: JClass,
 ) -> jstring {
@@ -382,7 +382,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCa
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCheckHealth(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeCheckHealth(
     mut env: JNIEnv,
     _class: JClass,
     timeout_ms: jlong,
@@ -393,7 +393,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCh
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeQuickPing(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeQuickPing(
     mut env: JNIEnv,
     _class: JClass,
     timeout_ms: jlong,
@@ -404,7 +404,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeQu
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeGetEnglishVoicePresets(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeGetEnglishVoicePresets(
     mut env: JNIEnv,
     _class: JClass,
 ) -> jstring {
@@ -413,7 +413,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeGe
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeFetchEnglishVoices(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeFetchEnglishVoices(
     mut env: JNIEnv,
     _class: JClass,
 ) -> jstring {
@@ -422,7 +422,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeFe
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeLoadEpub(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeLoadEpub(
     mut env: JNIEnv,
     _class: JClass,
     epub_path: JString,
@@ -436,7 +436,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeLo
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeLoadEpubBook(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeLoadEpubBook(
     mut env: JNIEnv,
     _class: JClass,
     epub_path: JString,
@@ -452,7 +452,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeLo
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeFetchBookMetadataOnline(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeFetchBookMetadataOnline(
     mut env: JNIEnv,
     _class: JClass,
     title: JString,
@@ -474,7 +474,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeFe
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeGetCacheStats(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeGetCacheStats(
     mut env: JNIEnv,
     _class: JClass,
 ) -> jstring {
@@ -483,7 +483,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeGe
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeClearCache(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeClearCache(
     mut env: JNIEnv,
     _class: JClass,
 ) -> jstring {
@@ -492,7 +492,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCl
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativePruneCache(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativePruneCache(
     mut env: JNIEnv,
     _class: JClass,
     max_bytes: jlong,
@@ -507,7 +507,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativePr
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeChunkParagraph(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeChunkParagraph(
     mut env: JNIEnv,
     _class: JClass,
     paragraph_json: JString,
@@ -527,7 +527,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCh
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeSynthesizeWithPrebuffer(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeSynthesizeWithPrebuffer(
     mut env: JNIEnv,
     _class: JClass,
     paragraph_json: JString,
@@ -548,7 +548,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeSy
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeSynthesizeWithCrossParagraphPrebuffer(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeSynthesizeWithCrossParagraphPrebuffer(
     mut env: JNIEnv,
     _class: JClass,
     paragraph_json: JString,
@@ -576,7 +576,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeSy
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeClickToReadResolve(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeClickToReadResolve(
     mut env: JNIEnv,
     _class: JClass,
     paragraph_json: JString,
@@ -598,7 +598,7 @@ pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeCl
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_pagina_reader_bridge_PaginaNativeBridge_nativeActiveWordAtMs(
+pub extern "system" fn Java_com_nuvola_reader_bridge_NuvolaNativeBridge_nativeActiveWordAtMs(
     mut env: JNIEnv,
     _class: JClass,
     timings_json: JString,

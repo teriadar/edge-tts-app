@@ -1,4 +1,4 @@
-Prima versione di Pagina Reader:
+Prima versione di Nuvola Reader:
 • Lettore EPUB 2/3 con motore nativo in Rust (rust-core)
 • Sintesi vocale neurale Edge-TTS con voci in italiano e inglese
 • Evidenziazione parola per parola in tempo reale e funzione click-to-read

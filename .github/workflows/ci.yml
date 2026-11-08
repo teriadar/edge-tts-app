@@ -61,7 +61,7 @@ jobs:
         with:
           tool: cargo-ndk
 
-      - name: Build native Rust library (libpagina_core.so)
+      - name: Build native Rust library (libnuvola_core.so)
         working-directory: rust-core
         run: |
           cargo ndk \
@@ -88,23 +88,23 @@ jobs:
             echo "$KEYSTORE_BASE64" | base64 --decode > release.jks
             export KEYSTORE_FILE="release.jks"
             ./gradlew assembleRelease --no-daemon
-            cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/pagina_reader.apk
+            cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/nuvola_reader.apk
             rm -f release.jks
           else
             echo "No signing key in secrets (PR or local run): building Debug APK..."
             ./gradlew assembleDebug --no-daemon
-            cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/pagina_reader.apk
+            cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/nuvola_reader.apk
           fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pagina_reader-apk
-          path: android-app/app/build/outputs/apk/pagina_reader.apk
+          name: nuvola_reader-apk
+          path: android-app/app/build/outputs/apk/nuvola_reader.apk
 
       - name: Publish GitHub Release on Tag
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          files: android-app/app/build/outputs/apk/pagina_reader.apk
+          files: android-app/app/build/outputs/apk/nuvola_reader.apk

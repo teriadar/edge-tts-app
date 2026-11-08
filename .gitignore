@@ -31,7 +31,7 @@ android-app/**/src/main/jniLibs/**/*.so
 *.keystore
 **/keystore.properties
 
-**/pagina_tts_cache/
+**/nuvola_tts_cache/
 **/*.tts-cache/
 
 graphify-out/

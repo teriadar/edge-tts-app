@@ -1,4 +1,4 @@
-package com.pagina.reader.ui.theme
+package com.nuvola.reader.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -56,7 +56,7 @@ data class ReaderTypography(
 }
 
 @Composable
-fun PaginaReaderTheme(
+fun NuvolaReaderTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

@@ -1,4 +1,4 @@
-Initial release of Pagina Reader:
+Initial release of Nuvola Reader:
 • EPUB 2 and EPUB 3 parsing via native Rust engine (rust-core)
 • Neural Edge-TTS audio narration with English and Italian voices
 • Real-time word-by-word highlighting and click-to-read navigation

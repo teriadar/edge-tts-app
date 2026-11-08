@@ -1,4 +1,4 @@
-package com.pagina.reader.player
+package com.nuvola.reader.player
 
 import android.app.PendingIntent
 import android.content.Context
@@ -14,10 +14,10 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
-import com.pagina.reader.MainActivity
-import com.pagina.reader.bridge.PaginaNativeBridge
-import com.pagina.reader.bridge.SynthesizedChunkDto
-import com.pagina.reader.bridge.WordAudioTiming
+import com.nuvola.reader.MainActivity
+import com.nuvola.reader.bridge.NuvolaNativeBridge
+import com.nuvola.reader.bridge.SynthesizedChunkDto
+import com.nuvola.reader.bridge.WordAudioTiming
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -134,7 +134,7 @@ class EdgeExoPlayerController(
     private var currentTimings: List<WordAudioTiming> = emptyList()
     private var positionTickerJob: Job? = null
     private var currentPlaybackSpeed: Float = 1.0f
-    private var currentBookTitle: String = "Pagina Reader"
+    private var currentBookTitle: String = "Nuvola Reader"
     private var currentBookAuthor: String = "Edge-TTS Neural"
     private var currentBookCoverBytes: ByteArray? = null
     private var chunkCompletionDispatched: Boolean = false
@@ -179,7 +179,7 @@ class EdgeExoPlayerController(
 
     private fun initMediaSession() {
         runCatching {
-            PaginaPlaybackService.activeMediaSession?.release()
+            NuvolaPlaybackService.activeMediaSession?.release()
             val launchIntent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
@@ -190,24 +190,24 @@ class EdgeExoPlayerController(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val session = MediaSession.Builder(context, forwardingPlayer)
-                .setId("pagina_media_session")
+                .setId("nuvola_media_session")
                 .setSessionActivity(pendingIntent)
                 .build()
             mediaSession = session
-            PaginaPlaybackService.registerSession(session)
+            NuvolaPlaybackService.registerSession(session)
         }
     }
 
     private fun ensurePlaybackServiceStarted() {
         runCatching {
-            mediaSession?.let { PaginaPlaybackService.registerSession(it) }
-            val serviceIntent = Intent(context, PaginaPlaybackService::class.java)
+            mediaSession?.let { NuvolaPlaybackService.registerSession(it) }
+            val serviceIntent = Intent(context, NuvolaPlaybackService::class.java)
             ContextCompat.startForegroundService(context, serviceIntent)
         }
     }
 
     fun updateBookMetadata(title: String, author: String, coverImagePath: String?) {
-        currentBookTitle = title.ifBlank { "Pagina Reader" }
+        currentBookTitle = title.ifBlank { "Nuvola Reader" }
         currentBookAuthor = author.ifBlank { "Edge-TTS Neural" }
         currentBookCoverBytes = runCatching {
             coverImagePath?.let { File(it) }?.takeIf { it.exists() && it.length() in 1..(5 * 1024 * 1024) }?.readBytes()
@@ -218,7 +218,7 @@ class EdgeExoPlayerController(
         val builder = MediaMetadata.Builder()
             .setTitle(currentBookTitle)
             .setArtist(currentBookAuthor)
-            .setAlbumTitle("Pagina Reader")
+            .setAlbumTitle("Nuvola Reader")
         val coverBytes = currentBookCoverBytes
         if (coverBytes != null) {
             builder.setArtworkData(coverBytes, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
@@ -246,7 +246,7 @@ class EdgeExoPlayerController(
 
         val mp3File = chunk.audioFilePath?.let { File(it) }?.takeIf { it.exists() }
             ?: run {
-                val fallbackDir = File(context.cacheDir, "pagina_tts_cache").apply { mkdirs() }
+                val fallbackDir = File(context.cacheDir, "nuvola_tts_cache").apply { mkdirs() }
                 File(fallbackDir, "${chunk.cacheKeySha256}.mp3").apply {
                     if (!exists()) {
                         writeBytes(chunk.toMp3ByteArray())
@@ -315,14 +315,14 @@ class EdgeExoPlayerController(
         if (clearActiveWord) {
             onActiveWordChanged(null)
         }
-        PaginaPlaybackService.stopService(context)
+        NuvolaPlaybackService.stopService(context)
     }
 
     fun release() {
         stopPositionTicker()
         runCatching {
-            if (PaginaPlaybackService.activeMediaSession == mediaSession) {
-                PaginaPlaybackService.registerSession(null)
+            if (NuvolaPlaybackService.activeMediaSession == mediaSession) {
+                NuvolaPlaybackService.registerSession(null)
             }
             mediaSession?.release()
             mediaSession = null
@@ -333,7 +333,7 @@ class EdgeExoPlayerController(
     private fun syncActiveWordAtCurrentPosition() {
         if (currentTimings.isNotEmpty()) {
             val posMs = exoPlayer.currentPosition.coerceAtLeast(0L)
-            val activeWord = PaginaNativeBridge.activeWordAtMs(currentTimings, posMs)
+            val activeWord = NuvolaNativeBridge.activeWordAtMs(currentTimings, posMs)
             if (activeWord != null) {
                 onActiveWordChanged(activeWord)
             }
@@ -345,7 +345,7 @@ class EdgeExoPlayerController(
         positionTickerJob = scope.launch(Dispatchers.Main) {
             while (isActive && exoPlayer.isPlaying) {
                 val posMs = exoPlayer.currentPosition.coerceAtLeast(0L)
-                val activeWord = PaginaNativeBridge.activeWordAtMs(currentTimings, posMs)
+                val activeWord = NuvolaNativeBridge.activeWordAtMs(currentTimings, posMs)
                 onActiveWordChanged(activeWord)
                 delay(20L)
             }

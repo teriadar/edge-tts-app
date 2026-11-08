@@ -1,4 +1,4 @@
-package com.pagina.reader.bridge
+package com.nuvola.reader.bridge
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -196,7 +196,7 @@ data class BridgeResponse<T>(
     val error: String? = null
 )
 
-object PaginaNativeBridge {
+object NuvolaNativeBridge {
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -205,7 +205,7 @@ object PaginaNativeBridge {
     }
 
     val isNativeLoaded: Boolean = try {
-        System.loadLibrary("pagina_core")
+        System.loadLibrary("nuvola_core")
         true
     } catch (_: Throwable) {
         false
@@ -319,7 +319,7 @@ object PaginaNativeBridge {
     suspend fun checkHealth(timeoutMs: Long = 5000L): Result<EdgeHealthReport> =
         withContext(Dispatchers.IO) {
             if (!isNativeLoaded) {
-                return@withContext Result.failure(IllegalStateException("Native library libpagina_core.so not loaded"))
+                return@withContext Result.failure(IllegalStateException("Native library libnuvola_core.so not loaded"))
             }
             decodeResponse(nativeCheckHealth(timeoutMs))
         }
@@ -327,7 +327,7 @@ object PaginaNativeBridge {
     suspend fun quickPing(timeoutMs: Long = 4000L): Result<EdgeHealthReport> =
         withContext(Dispatchers.IO) {
             if (!isNativeLoaded) {
-                return@withContext Result.failure(IllegalStateException("Native library libpagina_core.so not loaded"))
+                return@withContext Result.failure(IllegalStateException("Native library libnuvola_core.so not loaded"))
             }
             decodeResponse(nativeQuickPing(timeoutMs))
         }
@@ -348,7 +348,7 @@ object PaginaNativeBridge {
     suspend fun loadEpub(epubPath: String): Result<List<ChapterData>> =
         withContext(Dispatchers.IO) {
             if (!isNativeLoaded) {
-                return@withContext Result.failure(IllegalStateException("Native library libpagina_core.so not loaded"))
+                return@withContext Result.failure(IllegalStateException("Native library libnuvola_core.so not loaded"))
             }
             decodeResponse(nativeLoadEpub(epubPath))
         }
@@ -356,7 +356,7 @@ object PaginaNativeBridge {
     suspend fun loadEpubBook(epubPath: String, coverOutputDir: String = ""): Result<EpubBookData> =
         withContext(Dispatchers.IO) {
             if (!isNativeLoaded) {
-                return@withContext Result.failure(IllegalStateException("Native library libpagina_core.so not loaded"))
+                return@withContext Result.failure(IllegalStateException("Native library libnuvola_core.so not loaded"))
             }
             decodeResponse(nativeLoadEpubBook(epubPath, coverOutputDir))
         }

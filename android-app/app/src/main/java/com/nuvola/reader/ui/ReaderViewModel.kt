@@ -1,23 +1,23 @@
-package com.pagina.reader.ui
+package com.nuvola.reader.ui
 
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.pagina.reader.bridge.ChapterData
-import com.pagina.reader.bridge.EdgeHealthReport
-import com.pagina.reader.bridge.PaginaNativeBridge
-import com.pagina.reader.bridge.ParagraphData
-import com.pagina.reader.bridge.ParagraphKind
-import com.pagina.reader.bridge.SentenceChunk
-import com.pagina.reader.bridge.ServiceStatus
-import com.pagina.reader.bridge.TtsCacheStats
-import com.pagina.reader.bridge.VoicePreset
-import com.pagina.reader.bridge.WordAudioTiming
-import com.pagina.reader.data.PaginaStorageRepository
-import com.pagina.reader.data.PersistedAppState
-import com.pagina.reader.player.EdgeExoPlayerController
-import com.pagina.reader.ui.theme.ReaderTypography
+import com.nuvola.reader.bridge.ChapterData
+import com.nuvola.reader.bridge.EdgeHealthReport
+import com.nuvola.reader.bridge.NuvolaNativeBridge
+import com.nuvola.reader.bridge.ParagraphData
+import com.nuvola.reader.bridge.ParagraphKind
+import com.nuvola.reader.bridge.SentenceChunk
+import com.nuvola.reader.bridge.ServiceStatus
+import com.nuvola.reader.bridge.TtsCacheStats
+import com.nuvola.reader.bridge.VoicePreset
+import com.nuvola.reader.bridge.WordAudioTiming
+import com.nuvola.reader.data.NuvolaStorageRepository
+import com.nuvola.reader.data.PersistedAppState
+import com.nuvola.reader.player.EdgeExoPlayerController
+import com.nuvola.reader.ui.theme.ReaderTypography
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,10 +99,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     private val _uiState = MutableStateFlow(ReaderUiState())
     val uiState: StateFlow<ReaderUiState> = _uiState.asStateFlow()
 
-    private val storageRepository = PaginaStorageRepository(application.applicationContext)
+    private val storageRepository = NuvolaStorageRepository(application.applicationContext)
 
     private val cacheDirPath: String by lazy {
-        File(application.cacheDir, "pagina_tts_cache").apply { mkdirs() }.absolutePath
+        File(application.cacheDir, "nuvola_tts_cache").apply { mkdirs() }.absolutePath
     }
 
     private var activeSynthesisJob: Job? = null
@@ -222,12 +222,12 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
 
             playerController.setPlaybackSpeed(rateToSpeedFactor(resolvedRate))
 
-            PaginaNativeBridge.initSession(
+            NuvolaNativeBridge.initSession(
                 cacheDir = cacheDirPath,
                 voice = resolvedVoice,
                 rate = "+0%|pitch=$resolvedPitch"
             )
-            PaginaNativeBridge.pruneCache(maxBytes = 150L * 1024L * 1024L)
+            NuvolaNativeBridge.pruneCache(maxBytes = 150L * 1024L * 1024L)
             refreshCacheStats()
             refreshEdgeHealth(fullCheck = true)
             persistCurrentState()
@@ -258,7 +258,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
 
     fun refreshCacheStats() {
         viewModelScope.launch {
-            PaginaNativeBridge.getCacheStats().onSuccess { stats ->
+            NuvolaNativeBridge.getCacheStats().onSuccess { stats ->
                 _uiState.update { it.copy(cacheStats = stats) }
             }
         }
@@ -266,7 +266,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
 
     fun clearTtsCache() {
         viewModelScope.launch {
-            PaginaNativeBridge.clearCache().onSuccess {
+            NuvolaNativeBridge.clearCache().onSuccess {
                 refreshCacheStats()
             }
         }
@@ -280,9 +280,9 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             _uiState.update { it.copy(isCheckingHealth = true) }
             val result = if (fullCheck) {
-                PaginaNativeBridge.checkHealth(5000L)
+                NuvolaNativeBridge.checkHealth(5000L)
             } else {
-                PaginaNativeBridge.quickPing(4000L)
+                NuvolaNativeBridge.quickPing(4000L)
             }
             result.onSuccess { report ->
                 _uiState.update { it.copy(healthReport = report, isCheckingHealth = false) }
@@ -338,7 +338,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                     isSynthesizing = false
                 )
             }
-            PaginaNativeBridge.initSession(
+            NuvolaNativeBridge.initSession(
                 cacheDir = cacheDirPath,
                 voice = voiceShortName,
                 rate = "+0%|pitch=$currentPitch"
@@ -373,7 +373,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                     isSynthesizing = false
                 )
             }
-            PaginaNativeBridge.initSession(
+            NuvolaNativeBridge.initSession(
                 cacheDir = cacheDirPath,
                 voice = currentVoice,
                 rate = "+0%|pitch=$pitch"
@@ -430,7 +430,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         author: String = "Unknown Author"
     ) {
         viewModelScope.launch {
-            PaginaNativeBridge.loadEpubBook(
+            NuvolaNativeBridge.loadEpubBook(
                 epubPath = epubPath,
                 coverOutputDir = storageRepository.coversDir.absolutePath
             ).onSuccess { epubBook ->
@@ -484,7 +484,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.update { it.copy(fetchingMetadataBookIds = it.fetchingMetadataBookIds + book.id) }
 
         viewModelScope.launch {
-            PaginaNativeBridge.fetchBookMetadataOnline(
+            NuvolaNativeBridge.fetchBookMetadataOnline(
                 title = book.title,
                 author = book.author,
                 isbn = book.isbn.orEmpty(),
@@ -557,13 +557,13 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         persistCurrentState()
     }
 
-    private fun tokenizeParagraphWordsFallback(text: String): List<com.pagina.reader.bridge.WordSpan> {
-        val result = mutableListOf<com.pagina.reader.bridge.WordSpan>()
+    private fun tokenizeParagraphWordsFallback(text: String): List<com.nuvola.reader.bridge.WordSpan> {
+        val result = mutableListOf<com.nuvola.reader.bridge.WordSpan>()
         val tokenRegex = Regex("[\\p{L}\\p{N}]+(?:['’\\-][\\p{L}\\p{N}]+)*")
         var nextId = 0
         for (match in tokenRegex.findAll(text)) {
             result.add(
-                com.pagina.reader.bridge.WordSpan(
+                com.nuvola.reader.bridge.WordSpan(
                     id = nextId++,
                     charStart = match.range.first,
                     charEnd = match.range.last + 1,
@@ -637,7 +637,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
             return
         }
         viewModelScope.launch {
-            PaginaNativeBridge.loadEpubBook(
+            NuvolaNativeBridge.loadEpubBook(
                 epubPath = book.epubPath,
                 coverOutputDir = storageRepository.coversDir.absolutePath
             ).onSuccess { epubBook ->
@@ -741,7 +741,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         cancelActiveSynthesis()
         updateActiveBookProgress()
         playerController.stop()
-        viewModelScope.launch { PaginaNativeBridge.cancelPendingQueue() }
+        viewModelScope.launch { NuvolaNativeBridge.cancelPendingQueue() }
         _uiState.update {
             it.copy(
                 activeBook = null,
@@ -789,7 +789,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                 )
             }
 
-            PaginaNativeBridge.clickToReadResolve(paragraph, charOffset, sentencesPerChunk = 4)
+            NuvolaNativeBridge.clickToReadResolve(paragraph, charOffset, sentencesPerChunk = 4)
                 .onSuccess { clickDto ->
                     val initialTiming = buildBookmarkWordTiming(paragraph, clickDto.tappedWord.id)
                     _uiState.update {
@@ -836,7 +836,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                 )
             }
 
-            val chunksResult = PaginaNativeBridge.chunkParagraph(paragraph, sentencesPerChunk = 4)
+            val chunksResult = NuvolaNativeBridge.chunkParagraph(paragraph, sentencesPerChunk = 4)
             chunksResult.onSuccess { chunks ->
                 if (chunks.isEmpty()) {
 
@@ -887,7 +887,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         seekWordId: Int?,
         nextParagraph: ParagraphData?
     ) {
-        PaginaNativeBridge.synthesizeWithPrebuffer(
+        NuvolaNativeBridge.synthesizeWithPrebuffer(
             paragraph = paragraph,
             chunks = chunks,
             activeIdx = chunkIndex,

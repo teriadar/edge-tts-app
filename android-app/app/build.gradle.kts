@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.pagina.reader"
+    namespace = "com.nuvola.reader"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.pagina.reader"
+        applicationId = "com.nuvola.reader"
         minSdk = 26
         targetSdk = 35
         versionCode = 2

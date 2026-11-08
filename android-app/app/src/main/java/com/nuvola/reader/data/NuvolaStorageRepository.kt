@@ -1,9 +1,9 @@
-package com.pagina.reader.data
+package com.nuvola.reader.data
 
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import com.pagina.reader.ui.BookItem
+import com.nuvola.reader.ui.BookItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -21,7 +21,7 @@ data class PersistedAppState(
     val books: List<BookItem> = emptyList()
 )
 
-class PaginaStorageRepository(private val context: Context) {
+class NuvolaStorageRepository(private val context: Context) {
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -30,7 +30,7 @@ class PaginaStorageRepository(private val context: Context) {
     }
 
     private val stateFile: File
-        get() = File(context.filesDir, "pagina_reader_state.json")
+        get() = File(context.filesDir, "nuvola_reader_state.json")
 
     val booksDir: File
         get() = File(context.filesDir, "books").apply { mkdirs() }
@@ -48,7 +48,7 @@ class PaginaStorageRepository(private val context: Context) {
 
     suspend fun saveState(state: PersistedAppState) = withContext(Dispatchers.IO) {
         runCatching {
-            val tmpFile = File(context.filesDir, "pagina_reader_state.json.tmp")
+            val tmpFile = File(context.filesDir, "nuvola_reader_state.json.tmp")
             tmpFile.writeText(json.encodeToString(state))
             if (!tmpFile.renameTo(stateFile)) {
                 stateFile.writeText(json.encodeToString(state))

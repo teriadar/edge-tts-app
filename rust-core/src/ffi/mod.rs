@@ -100,7 +100,7 @@ impl PrebufferSession {
             return Ok(cached);
         }
 
-        let synthesized = PaginaEngine::synthesize_sentence_chunk_with_pitch(
+        let synthesized = NuvolaEngine::synthesize_sentence_chunk_with_pitch(
             paragraph,
             sentence_chunk,
             &self.voice,
@@ -188,9 +188,9 @@ impl PrebufferSession {
     }
 }
 
-pub struct PaginaEngine;
+pub struct NuvolaEngine;
 
-impl PaginaEngine {
+impl NuvolaEngine {
 
     pub async fn check_health(timeout_ms: u64) -> EdgeHealthReport {
         check_edge_health(timeout_ms).await

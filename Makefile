@@ -12,12 +12,12 @@ endif
 .PHONY: help test check clippy rust-android rust-arm64 apk-debug apk-release install clean
 
 help:
-	@echo "Pagina Reader Build Targets:"
+	@echo "Nuvola Reader Build Targets:"
 	@echo "  make test          - Run Rust unit and integration tests"
 	@echo "  make check         - Run cargo check on rust-core"
 	@echo "  make clippy        - Run cargo clippy linter on rust-core"
-	@echo "  make rust-android  - Cross-compile libpagina_core.so for all Android ABIs (arm64-v8a, armeabi-v7a, x86_64)"
-	@echo "  make rust-arm64    - Cross-compile libpagina_core.so for arm64-v8a only (fast dev build)"
+	@echo "  make rust-android  - Cross-compile libnuvola_core.so for all Android ABIs (arm64-v8a, armeabi-v7a, x86_64)"
+	@echo "  make rust-arm64    - Cross-compile libnuvola_core.so for arm64-v8a only (fast dev build)"
 	@echo "  make apk-debug     - Build Rust native libs and assemble the Android debug APK"
 	@echo "  make apk-release   - Build Rust native libs and assemble the Android release APK"
 	@echo "  make install       - Build and install the debug APK onto a connected device via adb"

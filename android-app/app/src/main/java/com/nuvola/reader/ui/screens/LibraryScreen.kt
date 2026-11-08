@@ -1,4 +1,4 @@
-package com.pagina.reader.ui.screens
+package com.nuvola.reader.ui.screens
 
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -100,11 +100,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.pagina.reader.R
-import com.pagina.reader.bridge.EdgeHealthReport
-import com.pagina.reader.bridge.ServiceStatus
-import com.pagina.reader.ui.BookItem
-import com.pagina.reader.ui.ReaderUiState
+import com.nuvola.reader.R
+import com.nuvola.reader.bridge.EdgeHealthReport
+import com.nuvola.reader.bridge.ServiceStatus
+import com.nuvola.reader.ui.BookItem
+import com.nuvola.reader.ui.ReaderUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -250,12 +250,12 @@ fun LibraryScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.ic_pagina_logo),
-                                    contentDescription = "Pagina Logo",
+                                    painter = painterResource(id = R.drawable.ic_nuvola_logo),
+                                    contentDescription = "Nuvola Logo",
                                     modifier = Modifier.size(38.dp)
                                 )
                                 Column {
-                                    Text("Pagina Reader", style = MaterialTheme.typography.titleLarge)
+                                    Text("Nuvola Reader", style = MaterialTheme.typography.titleLarge)
                                     Text(
                                         "Listen your books everywhere",
                                         style = MaterialTheme.typography.labelSmall,
@@ -275,7 +275,7 @@ fun LibraryScreen(
             ) {
                 Icon(
                     imageVector = if (showSettingsCloud) Icons.Default.Close else Icons.Default.Menu,
-                    contentDescription = "Pagina Hub"
+                    contentDescription = "Nuvola Hub"
                 )
             }
         }
@@ -292,8 +292,8 @@ fun LibraryScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_pagina_logo),
-                            contentDescription = "Pagina Logo",
+                            painter = painterResource(id = R.drawable.ic_nuvola_logo),
+                            contentDescription = "Nuvola Logo",
                             modifier = Modifier.size(72.dp)
                         )
                         Spacer(Modifier.height(14.dp))
@@ -324,7 +324,7 @@ fun LibraryScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(filteredBooks, key = { it.id }) { book ->
-                        PaginaBookGridCard(
+                        NuvolaBookGridCard(
                             book = book,
                             isFetchingMetadata = state.fetchingMetadataBookIds.contains(book.id),
                             onTap = { onOpenBook(book) },
@@ -485,7 +485,7 @@ private fun SettingsCloudBubble(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        text = "Pagina Hub",
+                        text = "Nuvola Hub",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -571,7 +571,7 @@ private fun SettingsCloudBubble(
 }
 
 @Composable
-private fun PaginaBookGridCard(
+private fun NuvolaBookGridCard(
     book: BookItem,
     isFetchingMetadata: Boolean,
     onTap: () -> Unit,
@@ -959,7 +959,7 @@ private fun BookMetadataDetailsDialog(
                     } else if (isFetching) {
                         "Fetching synopsis and high-resolution cover from online catalogs..."
                     } else {
-                        "No description available yet. You can fetch missing covers and info from Pagina Hub."
+                        "No description available yet. You can fetch missing covers and info from Nuvola Hub."
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = colors.onSurfaceVariant
@@ -1016,7 +1016,7 @@ private fun AppPermissionsInfoDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "To enable background audio playback, WebSocket streaming, and network status management, Pagina Reader uses the following system permissions:",
+                    text = "To enable background audio playback, WebSocket streaming, and network status management, Nuvola Reader uses the following system permissions:",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

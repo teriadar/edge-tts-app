@@ -12,7 +12,7 @@ pub use epub::{
     fetch_book_metadata_online, parse_container_xml, parse_epub_book, parse_epub_file,
     parse_opf_document, parse_xhtml_chapter, EpubBookData, OnlineBookMetadata, OpfPackage,
 };
-pub use ffi::{PaginaEngine, PrebufferSession, SynthesizedChunk};
+pub use ffi::{NuvolaEngine, PrebufferSession, SynthesizedChunk};
 pub use tts::{
     check_edge_health, english_voice_presets, list_english_voices, list_voices, quick_ws_ping,
     sha256_hex, BoundaryType, Communicate, Drm, EdgeHealthReport, EdgeTtsError, ProgressBar,

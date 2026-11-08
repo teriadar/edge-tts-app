@@ -12,7 +12,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="Pagina Reader"
+        android:label="Nuvola Reader"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
@@ -29,7 +29,7 @@
         </activity>
 
         <service
-            android:name=".player.PaginaPlaybackService"
+            android:name=".player.NuvolaPlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>
