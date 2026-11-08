@@ -589,7 +589,10 @@ pub fn parse_epub_book(
             let mut entry = archive
                 .by_index(i)
                 .map_err(|e| EdgeTtsError::InvalidConfig(e.to_string()))?;
-            let name = entry.name().to_string();
+            let name = entry
+                .name()
+                .map_err(|e| EdgeTtsError::InvalidConfig(e.to_string()))?
+                .into_owned();
             if name.ends_with(".xhtml") || name.ends_with(".html") || name.ends_with(".htm") {
                 let mut content = String::new();
                 if entry.read_to_string(&mut content).is_ok() {
