@@ -1,0 +1,2 @@
+• Aggiornato il motore Rust di estrazione EPUB (zip 9.x) per maggiore sicurezza e decompressione nativa
+• Miglioramenti per la riproducibilità della build su F-Droid (verifica SHA-256 del wrapper Gradle 9.1.0 e disabilitazione dei metadati proprietari nell'APK)

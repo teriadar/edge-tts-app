@@ -1,0 +1,2 @@
+• Updated Rust EPUB archive engine (zip 9.x) for improved security and pure-Rust decompression
+• F-Droid build reproducibility improvements (verified Gradle 9.1.0 wrapper SHA-256 and disabled proprietary dependency metadata block)
