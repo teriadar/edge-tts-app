@@ -1,4 +1,4 @@
--keep class com.pagina.reader.bridge.PaginaNativeBridge {
+-keep class com.xdgetts.teriadar.bridge.XdgettsNativeBridge {
     *;
 }
 -keepclasseswithmembernames,includedescriptorclasses class * {
@@ -15,10 +15,10 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class com.pagina.reader.**$$serializer { *; }
--keepclassmembers class com.pagina.reader.** {
+-keep,includedescriptorclasses class com.xdgetts.teriadar.**$$serializer { *; }
+-keepclassmembers class com.xdgetts.teriadar.** {
     *** Companion;
 }
--keepclasseswithmembers class com.pagina.reader.** {
+-keepclasseswithmembers class com.xdgetts.teriadar.** {
     kotlinx.serialization.KSerializer serializer(...);
 }

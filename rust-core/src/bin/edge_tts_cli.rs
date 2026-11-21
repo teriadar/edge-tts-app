@@ -3,11 +3,11 @@ use std::io::{self, Read, Write};
 use std::path::PathBuf;
 
 use clap::Parser;
-use pagina_core::tts::constants::DEFAULT_VOICE;
-use pagina_core::tts::{
+use xdgetts_core::tts::constants::DEFAULT_VOICE;
+use xdgetts_core::tts::{
     list_voices, BoundaryType, Communicate, EdgeTtsError, ProgressBar, Result, SubMaker, TtsChunk,
 };
-use pagina_core::PaginaEngine;
+use xdgetts_core::XdgettsEngine;
 
 #[derive(Parser, Debug)]
 #[command(name = "edge-tts-rs", version)]
@@ -71,7 +71,7 @@ async fn print_voices(proxy: Option<&str>) -> Result<()> {
 }
 
 async fn run_epub_tts(args: &CliArgs, epub_path: &str) -> Result<()> {
-    let chapters = PaginaEngine::load_epub(epub_path)?;
+    let chapters = XdgettsEngine::load_epub(epub_path)?;
     eprintln!(
         "[EPUB] Loaded '{}' -> {} chapter(s) found",
         epub_path,
@@ -102,14 +102,14 @@ async fn run_epub_tts(args: &CliArgs, epub_path: &str) -> Result<()> {
                 );
             }
 
-            let chunks = PaginaEngine::chunk_paragraph(para, 4);
+            let chunks = XdgettsEngine::chunk_paragraph(para, 4);
             for sc in &chunks {
                 eprintln!(
                     "  -> Synthesizing SentenceChunk #{} (chars={}..{}, words={:?}): \"{}\"",
                     sc.chunk_index, sc.char_start, sc.char_end, sc.word_ids, sc.text
                 );
                 let synth =
-                    PaginaEngine::synthesize_sentence_chunk(para, sc, &args.voice, &args.rate)
+                    XdgettsEngine::synthesize_sentence_chunk(para, sc, &args.voice, &args.rate)
                         .await?;
                 eprintln!(
                     "     Received MP3 audio: {} bytes | Aligned WordAudioTimings: {}",
@@ -229,7 +229,7 @@ async fn main() -> Result<()> {
     let args = CliArgs::parse();
 
     if args.health {
-        let report = PaginaEngine::check_health(5000).await;
+        let report = XdgettsEngine::check_health(5000).await;
         println!("{}", serde_json::to_string_pretty(&report)?);
         return Ok(());
     }

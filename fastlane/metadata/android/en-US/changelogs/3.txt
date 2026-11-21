@@ -1,0 +1,3 @@
+• Rebranded app to xdgetts (package ID: com.xdgetts.teriadar)
+• Updated native Rust core crate to xdgetts-core (libxdgetts_core.so)
+• Updated Fastlane metadata and build configuration for v0.1.2

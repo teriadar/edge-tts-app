@@ -1,4 +1,4 @@
-package com.pagina.reader.player
+package com.xdgetts.teriadar.player
 
 import android.content.Intent
 import androidx.annotation.OptIn
@@ -6,10 +6,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.pagina.reader.R
+import com.xdgetts.teriadar.R
 
 @OptIn(UnstableApi::class)
-class PaginaPlaybackService : MediaSessionService() {
+class XdgettsPlaybackService : MediaSessionService() {
 
     companion object {
         @Volatile
@@ -17,7 +17,7 @@ class PaginaPlaybackService : MediaSessionService() {
             private set
 
         @Volatile
-        private var instance: PaginaPlaybackService? = null
+        private var instance: XdgettsPlaybackService? = null
 
         fun registerSession(session: MediaSession?) {
             activeMediaSession = session
@@ -30,7 +30,7 @@ class PaginaPlaybackService : MediaSessionService() {
             runCatching {
                 instance?.stopForeground(STOP_FOREGROUND_REMOVE)
                 instance?.stopSelf()
-                context.stopService(Intent(context, PaginaPlaybackService::class.java))
+                context.stopService(Intent(context, XdgettsPlaybackService::class.java))
             }
         }
     }

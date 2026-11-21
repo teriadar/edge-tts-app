@@ -1,4 +1,4 @@
-package com.pagina.reader
+package com.xdgetts.teriadar
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,10 +14,10 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
-import com.pagina.reader.ui.ReaderViewModel
-import com.pagina.reader.ui.screens.LibraryScreen
-import com.pagina.reader.ui.screens.ReaderScreen
-import com.pagina.reader.ui.theme.PaginaReaderTheme
+import com.xdgetts.teriadar.ui.ReaderViewModel
+import com.xdgetts.teriadar.ui.screens.LibraryScreen
+import com.xdgetts.teriadar.ui.screens.ReaderScreen
+import com.xdgetts.teriadar.ui.theme.XdgettsTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val state by viewModel.uiState.collectAsState()
 
-            PaginaReaderTheme {
+            XdgettsTheme {
                 BackHandler(enabled = state.activeBook != null) {
                     viewModel.closeReader()
                 }

@@ -1,4 +1,4 @@
-package com.pagina.reader.ui.screens
+package com.xdgetts.teriadar.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -90,11 +90,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.pagina.reader.bridge.ParagraphData
-import com.pagina.reader.bridge.ParagraphKind
-import com.pagina.reader.bridge.WordAudioTiming
-import com.pagina.reader.ui.ReaderUiState
-import com.pagina.reader.ui.theme.ReaderTypography
+import com.xdgetts.teriadar.bridge.ParagraphData
+import com.xdgetts.teriadar.bridge.ParagraphKind
+import com.xdgetts.teriadar.bridge.WordAudioTiming
+import com.xdgetts.teriadar.ui.ReaderUiState
+import com.xdgetts.teriadar.ui.theme.ReaderTypography
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -261,7 +261,7 @@ fun ReaderScreen(
                 enter = slideInVertically { it } + fadeIn(),
                 exit = slideOutVertically { it } + fadeOut()
             ) {
-                PaginaReaderBottomBar(
+                XdgettsReaderBottomBar(
                     state = state,
                     onTogglePlayPause = onTogglePlayPause,
                     onOpenVoiceSheet = { showVoiceSheet = true },
@@ -651,7 +651,7 @@ private fun InteractiveParagraphItem(
             )
     ) {
         when (paragraph.kind) {
-            com.pagina.reader.bridge.ParagraphKind.Title -> {
+            com.xdgetts.teriadar.bridge.ParagraphKind.Title -> {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -671,7 +671,7 @@ private fun InteractiveParagraphItem(
                     )
                 }
             }
-            com.pagina.reader.bridge.ParagraphKind.Subtitle -> {
+            com.xdgetts.teriadar.bridge.ParagraphKind.Subtitle -> {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -691,7 +691,7 @@ private fun InteractiveParagraphItem(
                     )
                 }
             }
-            com.pagina.reader.bridge.ParagraphKind.Quote -> {
+            com.xdgetts.teriadar.bridge.ParagraphKind.Quote -> {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -720,7 +720,7 @@ private fun InteractiveParagraphItem(
                     )
                 }
             }
-            com.pagina.reader.bridge.ParagraphKind.Footnote -> {
+            com.xdgetts.teriadar.bridge.ParagraphKind.Footnote -> {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerLow,
@@ -750,7 +750,7 @@ private fun InteractiveParagraphItem(
                     }
                 }
             }
-            com.pagina.reader.bridge.ParagraphKind.Body -> {
+            com.xdgetts.teriadar.bridge.ParagraphKind.Body -> {
                 RoundedHighlightClickableText(
                     text = annotatedText,
                     highlightRange = highlightRange,
@@ -835,7 +835,7 @@ private fun RoundedHighlightClickableText(
 }
 
 @Composable
-private fun PaginaReaderBottomBar(
+private fun XdgettsReaderBottomBar(
     state: ReaderUiState,
     onTogglePlayPause: () -> Unit,
     onOpenVoiceSheet: () -> Unit,

@@ -1,4 +1,4 @@
-package com.pagina.reader.ui.screens
+package com.xdgetts.teriadar.ui.screens
 
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -100,11 +100,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.pagina.reader.R
-import com.pagina.reader.bridge.EdgeHealthReport
-import com.pagina.reader.bridge.ServiceStatus
-import com.pagina.reader.ui.BookItem
-import com.pagina.reader.ui.ReaderUiState
+import com.xdgetts.teriadar.R
+import com.xdgetts.teriadar.bridge.EdgeHealthReport
+import com.xdgetts.teriadar.bridge.ServiceStatus
+import com.xdgetts.teriadar.ui.BookItem
+import com.xdgetts.teriadar.ui.ReaderUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -122,7 +122,7 @@ fun LibraryScreen(
     onEnrichAllMetadata: () -> Unit = {}
 ) {
     var searching by remember { mutableStateOf(false) }
-    var showSettingsCloud by remember { mutableStateOf(false) }
+    var showSettingsHub by remember { mutableStateOf(false) }
     var showHealthDialog by remember { mutableStateOf(false) }
     var showPermissionsInfoDialog by remember { mutableStateOf(false) }
     var selectedBookForInfoId by remember { mutableStateOf<String?>(null) }
@@ -250,12 +250,12 @@ fun LibraryScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.ic_pagina_logo),
-                                    contentDescription = "Pagina Logo",
+                                    painter = painterResource(id = R.drawable.ic_xdgetts_logo),
+                                    contentDescription = "xdgetts Logo",
                                     modifier = Modifier.size(38.dp)
                                 )
                                 Column {
-                                    Text("Pagina Reader", style = MaterialTheme.typography.titleLarge)
+                                    Text("xdgetts", style = MaterialTheme.typography.titleLarge)
                                     Text(
                                         "Listen your books everywhere",
                                         style = MaterialTheme.typography.labelSmall,
@@ -270,12 +270,12 @@ fun LibraryScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showSettingsCloud = !showSettingsCloud },
+                onClick = { showSettingsHub = !showSettingsHub },
                 shape = CircleShape
             ) {
                 Icon(
-                    imageVector = if (showSettingsCloud) Icons.Default.Close else Icons.Default.Menu,
-                    contentDescription = "Pagina Hub"
+                    imageVector = if (showSettingsHub) Icons.Default.Close else Icons.Default.Menu,
+                    contentDescription = "xdgetts Hub"
                 )
             }
         }
@@ -292,8 +292,8 @@ fun LibraryScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_pagina_logo),
-                            contentDescription = "Pagina Logo",
+                            painter = painterResource(id = R.drawable.ic_xdgetts_logo),
+                            contentDescription = "xdgetts Logo",
                             modifier = Modifier.size(72.dp)
                         )
                         Spacer(Modifier.height(14.dp))
@@ -324,7 +324,7 @@ fun LibraryScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(filteredBooks, key = { it.id }) { book ->
-                        PaginaBookGridCard(
+                        XdgettsBookGridCard(
                             book = book,
                             isFetchingMetadata = state.fetchingMetadataBookIds.contains(book.id),
                             onTap = { onOpenBook(book) },
@@ -335,7 +335,7 @@ fun LibraryScreen(
                 }
             }
 
-            if (showSettingsCloud) {
+            if (showSettingsHub) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -343,13 +343,13 @@ fun LibraryScreen(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { showSettingsCloud = false }
+                            onClick = { showSettingsHub = false }
                         )
                 )
             }
 
             AnimatedVisibility(
-                visible = showSettingsCloud,
+                visible = showSettingsHub,
                 enter = fadeIn(tween(180)) +
                     scaleIn(
                         initialScale = 0.85f,
@@ -368,11 +368,11 @@ fun LibraryScreen(
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = 84.dp)
             ) {
-                SettingsCloudBubble(
+                SettingsHubBubble(
                     state = state,
                     searching = searching,
                     onImportEpub = {
-                        showSettingsCloud = false
+                        showSettingsHub = false
                         epubPickerLauncher.launch(
                             arrayOf("application/epub+zip", "application/octet-stream", "*/*")
                         )
@@ -380,18 +380,18 @@ fun LibraryScreen(
                     onToggleSearch = {
                         searching = !searching
                         if (!searching) onSearchQueryChange("")
-                        showSettingsCloud = false
+                        showSettingsHub = false
                     },
                     onEnrichAllMetadata = {
-                        showSettingsCloud = false
+                        showSettingsHub = false
                         onEnrichAllMetadata()
                     },
                     onOpenHealthDetails = {
-                        showSettingsCloud = false
+                        showSettingsHub = false
                         showHealthDialog = true
                     },
                     onOpenPermissionsInfo = {
-                        showSettingsCloud = false
+                        showSettingsHub = false
                         showPermissionsInfoDialog = true
                     }
                 )
@@ -454,7 +454,7 @@ private fun rememberCoverBitmap(coverImagePath: String?): ImageBitmap? {
 }
 
 @Composable
-private fun SettingsCloudBubble(
+private fun SettingsHubBubble(
     state: ReaderUiState,
     searching: Boolean,
     onImportEpub: () -> Unit,
@@ -485,7 +485,7 @@ private fun SettingsCloudBubble(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        text = "Pagina Hub",
+                        text = "xdgetts Hub",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -571,7 +571,7 @@ private fun SettingsCloudBubble(
 }
 
 @Composable
-private fun PaginaBookGridCard(
+private fun XdgettsBookGridCard(
     book: BookItem,
     isFetchingMetadata: Boolean,
     onTap: () -> Unit,
@@ -959,7 +959,7 @@ private fun BookMetadataDetailsDialog(
                     } else if (isFetching) {
                         "Fetching synopsis and high-resolution cover from online catalogs..."
                     } else {
-                        "No description available yet. You can fetch missing covers and info from Pagina Hub."
+                        "No description available yet. You can fetch missing covers and info from xdgetts Hub."
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = colors.onSurfaceVariant
@@ -1016,7 +1016,7 @@ private fun AppPermissionsInfoDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "To enable background audio playback, WebSocket streaming, and network status management, Pagina Reader uses the following system permissions:",
+                    text = "To enable background audio playback, WebSocket streaming, and network status management, xdgetts uses the following system permissions:",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
